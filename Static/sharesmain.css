@@ -11,7 +11,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh; /* Set the container height to at least 100% of the viewport height */
-    background-color: #000; /* Black background */
+    background-color: #383434; /* Black background */
     color: #fff; /* Text color */
 }
 
@@ -24,7 +24,7 @@ body {
 
 /* Center the share-lane div horizontally and vertically */
 .share-lane {
-    background-color: #000; /* Black background for the lane */
+    background-color: #383434; /* Black background for the lane */
     color: #fff;
     border-radius: 5px;
     padding: 20px; /* Add padding to create space between heading and text */

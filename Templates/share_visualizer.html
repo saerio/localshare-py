@@ -18,15 +18,25 @@
         // Function to fetch text using UUID from the server and render it
         function renderTextFromUUID(uuid) {
             fetch(`/share/${uuid}`)
-                .then(response => response.text())
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    } else {
+                        throw new Error('Share not found');
+                    }
+                })
                 .then(text => {
                     document.getElementById('text-container').value = text;
                     resizeTextarea();
                 })
                 .catch(error => {
                     console.error('Error fetching text:', error);
-                    document.getElementById('text-container').value = 'Error fetching text.';
-                    resizeTextarea();
+                    if (error.message === 'Share not found') {
+                        window.location.href = '/404/shares';
+                    } else {
+                        document.getElementById('text-container').value = 'Error fetching text.';
+                        resizeTextarea();
+                    }
                 });
         }
 

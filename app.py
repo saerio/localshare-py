@@ -1,6 +1,6 @@
 import os
 import uuid
-from flask import Flask, request, jsonify, render_template, send_from_directory, make_response
+from flask import Flask, request, jsonify, render_template, send_from_directory, make_response, redirect
 import base64
 
 app = Flask(__name__)
@@ -67,7 +67,7 @@ def visualize_share(shareid):
     try:
         uuid.UUID(shareid)
     except ValueError:
-        return jsonify({"error": "Invalid share UUID"}), 400
+        return redirect("/404/shares")
 
     # Render the share_visualizer.html template
     return render_template("share_visualizer.html")
@@ -83,6 +83,10 @@ def serve_css():
 @app.route('/sharesmain.css')
 def serve_shares_css():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'sharesmain.css', mimetype='text/css')
+
+@app.route('/404/shares')
+def serve_404_error():
+    return render_template("404.html")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
