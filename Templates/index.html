@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Forum</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background-color: #333; /* Set the background color for dark mode */
+            color: #fff; /* Set the text color for dark mode */
+            font-family: Arial, sans-serif;
+            text-align: center; /* Center the content */
+            margin: 0; /* Remove default body margin */
+            padding: 20px; /* Add some padding for better spacing */
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        /* Style for the forms */
+        form {
+            margin-bottom: 20px;
+            max-width: 600px; /* Limit the form width on larger screens */
+            margin: 0 auto; /* Center the form horizontally */
+        }
+
+        label {
+            display: block; /* Make labels appear on separate lines */
+            margin-bottom: 5px;
+        }
+
+        /* Wrapper div for textarea and submit button */
+        .input-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        textarea {
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            background-color: #444; /* Set the input background color for dark mode */
+            color: #fff; /* Set the input text color for dark mode */
+            resize: vertical; /* Allow vertical resizing only */
+            overflow-x: hidden; /* Hide horizontal scrollbar */
+            width: 97%;
+            height: 50%;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff; /* Set the submit button background color to light blue */
+            color: #fff; /* Set the submit button text color */
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%; /* Set the button width to match the text area */
+            padding: 8px;
+            border: none;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3; /* Set the submit button background color on hover */
+        }
+
+        /* Styling for the response messages */
+        #responseMessage, #sharedContent {
+            font-weight: bold;
+        }
+
+        /* Styling for dark mode link color */
+        a {
+            color: #f0ad4e; /* Set the link color */
+        }
+    </style>
+</head>
+<body>
+    <h1>localshare</h1>
+    <div>
+        <h2>Create a Share</h2>
+        <form id="shareForm">
+            <label for="shareData">Enter your text:</label>
+            <div class="input-wrapper">
+                <textarea id="shareData" name="shareData" rows="4" cols="50"></textarea>
+                <input type="submit" value="Submit">
+            </div>
+        </form>
+        <div id="responseMessage"></div>
+    </div>
+    <script>
+        // Function to handle the form submission for creating a share
+        document.getElementById("shareForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const shareData = formData.get("shareData");
+
+            // POST request to the backend to create a new share
+            fetch("/new-share", {
+                method: "POST",
+                body: shareData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the response message with the URL to the user
+                const shareURL = window.location.origin + "/vis/shares/" + data.share_uuid;
+                document.getElementById("responseMessage").innerHTML = "Share created!<br>URL: <a href='" + shareURL + "'>" + shareURL + "</a>";
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        });
+    </script>
+</body>
+</html>

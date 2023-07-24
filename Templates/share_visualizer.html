@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LocalShare Visualizer</title>
+    <link rel="stylesheet" href="/sharesmain.css"> <!-- Link to the external CSS file -->
+</head>
+<body>
+    <div class="main-container">
+        <div class="inner-container">
+            <div class="share-lane">
+                <h1>LocalShare</h1>
+                <textarea id="text-container" rows="1" readonly></textarea>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Function to fetch text using UUID from the server and render it
+        function renderTextFromUUID(uuid) {
+            fetch(`/share/${uuid}`)
+                .then(response => response.text())
+                .then(text => {
+                    document.getElementById('text-container').value = text;
+                    resizeTextarea();
+                })
+                .catch(error => {
+                    console.error('Error fetching text:', error);
+                    document.getElementById('text-container').value = 'Error fetching text.';
+                    resizeTextarea();
+                });
+        }
+
+        // Get the UUID from the URL path
+        const url = window.location.pathname.split('/');
+        const uuidToRender = url[url.length - 1];
+        renderTextFromUUID(uuidToRender);
+
+        // Function to resize the textarea to fit the content
+        function resizeTextarea() {
+            const textarea = document.getElementById('text-container');
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+    </script>
+</body>
+</html>

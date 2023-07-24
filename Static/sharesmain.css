@@ -1,0 +1,57 @@
+/* Reset some default styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Center the main container in the middle of the screen */
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Set the container height to at least 100% of the viewport height */
+    background-color: #000; /* Black background */
+    color: #fff; /* Text color */
+}
+
+/* Styling for the inner container */
+.inner-container {
+    width: 100%; /* Expand the inner container's width to fill the available space */
+    max-width: 600px; /* Set the maximum width of the inner container */
+    padding: 20px;
+}
+
+/* Center the share-lane div horizontally and vertically */
+.share-lane {
+    background-color: #000; /* Black background for the lane */
+    color: #fff;
+    border-radius: 5px;
+    padding: 20px; /* Add padding to create space between heading and text */
+    display: flex;
+    flex-direction: column; /* Display the elements inside the lane in a column */
+    align-items: center; /* Center the elements horizontally */
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Styling for the textarea */
+textarea {
+    width: 100%;
+    height: 80vh; /* Set the initial height of the textarea to 80% of the viewport height */
+    font-size: 16px;
+    resize: none; /* Disable textarea resizing */
+    background-color: #686868; /* Gray background for textarea */
+    color: #fcfcfc;
+    border: 1px solid #ccc; /* Normal border for textarea */
+    outline: none;
+    overflow-y: hidden; /* Hide vertical scrollbar */
+    padding: 10px; /* Add padding for better appearance */
+    /* Center the text content within the textarea */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
