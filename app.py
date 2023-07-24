@@ -5,11 +5,6 @@ import base64
 
 app = Flask(__name__)
 
-# Function to generate a random nonce value
-def generate_nonce():
-    random_bytes = os.urandom(16)
-    nonce = base64.b64encode(random_bytes).decode('utf-8')
-    return nonce
 
 @app.route('/')
 def index():
