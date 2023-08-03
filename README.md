@@ -41,4 +41,3 @@ If you accidentally enter an incorrect link or try to access a share that doesn'
 
    ![screenshot of the 404 error page](https://i.ibb.co/4Rr4sy4/foto3.png)
 
-That's it! You're now a master of sharing text using our awesome web application. We hope you enjoy sharing your thoughts and ideas with others in a simple and fun way. If you have any questions or need further assistance, feel free to ask. Happy sharing!
