@@ -33,7 +33,7 @@ Now that we have everything set up, let's run the web application and start shar
 
 all you need to do is click on the share link you received or copy and paste it into your browser's address bar. The server will then show you the text you shared, and you can read it again or share it further with others.
 
-   ![foto of url bar w/ a share url in it](https://i.ibb.co/gDtTJq5/foto2.png)
+   ![foto of url bar w/ a share url in it]([https://i.ibb.co/gDtTJq5/foto2.png](https://camo.githubusercontent.com/be0bbb527a71aca39719038b9d335271e77266c752e29e54d12bd03eb44bbc92/68747470733a2f2f692e6962622e636f2f674474544a71352f666f746f322e706e67))
 
 ### Step 4: Oops! 404 Error
 
