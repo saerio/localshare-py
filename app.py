@@ -21,7 +21,7 @@ def newshare():
         # Input validation (check if data is not empty and within acceptable limits)
         if not text_data.strip():
             return jsonify({"error": "Data cannot be empty"}), 400
-        if len(text_data) > 100000:  # Adjust the limit to your requirements
+        if len(text_data) > 100:  # Adjust the limit to your requirements
             return jsonify({"error": "Data exceeds the maximum allowed length"}), 400
 
         if not os.path.exists("/shares"):
@@ -69,15 +69,15 @@ def visualize_share(shareid):
 
 @app.route('/main.js')
 def serve_js():
-    return send_from_directory(os.path.join(app.root_path, 'static'), 'mainjs.js', mimetype='application/javascript')
+    return send_from_directory(os.path.join(app.root_path, 'Static'), 'mainjs.js', mimetype='application/javascript')
 
 @app.route('/main.js')
 def serve_css():
-    return send_from_directory(os.path.join(app.root_path, 'static'), 'styles.css', mimetype='text/css')
+    return send_from_directory(os.path.join(app.root_path, 'Static'), 'styles.css', mimetype='text/css')
 
 @app.route('/sharesmain.css')
 def serve_shares_css():
-    return send_from_directory(os.path.join(app.root_path, 'static'), 'sharesmain.css', mimetype='text/css')
+    return send_from_directory(os.path.join(app.root_path, 'Static'), 'sharesmain.css', mimetype='text/css')
 
 @app.route('/404/shares')
 def serve_404_error():
