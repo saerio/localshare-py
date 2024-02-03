@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>LocalShare Visualizer</title>
     <link rel="stylesheet" href="/sharesmain.css"> <!-- Link to the external CSS file -->
@@ -9,24 +10,26 @@
     <div class="main-container">
         <div class="inner-container">
             <div class="share-lane">
-                <h1>LocalShare</h1>
+                <h1 id="pageHeading">LocalShare</h1>
                 <textarea id="text-container" rows="1" readonly></textarea>
             </div>
         </div>
     </div>
     <script>
-        // Function to fetch text using UUID from the server and render it
+        // Function to fetch text and title using UUID from the server and render it
         function renderTextFromUUID(uuid) {
             fetch(`/share/${uuid}`)
                 .then(response => {
                     if (response.ok) {
-                        return response.text();
+                        return response.json();
                     } else {
                         throw new Error('Share not found');
                     }
                 })
-                .then(text => {
-                    document.getElementById('text-container').value = text;
+                .then(data => {
+                    console.log('Data from server:', data); // Debugging statement
+                    document.getElementById('pageHeading').textContent = data.name; // Update key to 'name'
+                    document.getElementById('text-container').value = data.text;
                     resizeTextarea();
                 })
                 .catch(error => {
