@@ -30,7 +30,7 @@ def newshare():
         # Additional input validation (customize as needed)
         if not text_data.strip():
             return jsonify({"error": "Text cannot be empty"}), 400
-        if len(text_data) > 100:  # Adjust the limit to your requirements
+        if len(text_data) > 1000:  # Adjust the limit to your requirements
             return jsonify({"error": "Text exceeds the maximum allowed length"}), 400
 
         if not os.path.exists("/shares"):
@@ -71,6 +71,31 @@ def share(shareid):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@app.route("/public-shares")
+def public_shares():
+    public_shares_list = []
+
+    shares_directory = "/shares"
+    for filename in os.listdir(shares_directory):
+        file_path = os.path.join(shares_directory, filename)
+        if os.path.isfile(file_path) and filename.endswith(".json"):
+            try:
+                with open(file_path, 'r', encoding='utf-8') as file:
+                    json_data = json.load(file)
+
+                if json_data.get("public", False):
+                    public_shares_list.append({
+                        "share_uuid": filename.split(".")[0],  # Extract share_uuid from filename
+                        "name": json_data.get("name", ""),
+                        "text": json_data.get("text", "")
+                    })
+
+            except Exception as e:
+                return jsonify({"error": str(e)}), 500
+
+    return jsonify(public_shares_list), 200
 
 
 # Define the endpoint to render the shared text visualizer HTML for the given shareid parameter (UUID)
