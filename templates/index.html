@@ -1,31 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Forum</title>
+    <title>LocalShare</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
-            background-color: #333; /* Set the background color for dark mode */
-            color: #fff; /* Set the text color for dark mode */
+            background-color: #333;
+            color: #fff;
             font-family: Arial, sans-serif;
-            text-align: center; /* Center the content */
-            margin: 0; /* Remove default body margin */
-            padding: 20px; /* Add some padding for better spacing */
+            text-align: center;
+            margin: 0;
+            padding: 20px;
         }
 
-        h1 {
+        h1, h2 {
             margin-bottom: 20px;
+        }
+
+        /* Styling for dark mode link color */
+        a {
+            color: #f0ad4e;
         }
 
         /* Style for the forms */
         form {
             margin-bottom: 20px;
-            max-width: 600px; /* Limit the form width on larger screens */
-            margin: 0 auto; /* Center the form horizontally */
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         label {
-            display: block; /* Make labels appear on separate lines */
+            display: block;
             margin-bottom: 5px;
         }
 
@@ -36,68 +41,111 @@
             align-items: stretch;
         }
 
-        textarea {
+        textarea, input {
             margin-bottom: 10px;
             padding: 8px;
             border: 1px solid #ccc;
-            background-color: #444; /* Set the input background color for dark mode */
-            color: #fff; /* Set the input text color for dark mode */
-            resize: vertical; /* Allow vertical resizing only */
-            overflow-x: hidden; /* Hide horizontal scrollbar */
-            width: 97%;
-            height: 50%;
+            background-color: #444;
+            color: #fff;
+            width: 97%; /* Set the width to 97% */
+        }
+
+        select {
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            background-color: #444;
+            color: #fff;
+            width: 100%;
         }
 
         input[type="submit"] {
-            background-color: #007bff; /* Set the submit button background color to light blue */
-            color: #fff; /* Set the submit button text color */
+            background-color: #007bff;
+            color: #fff;
             cursor: pointer;
             transition: background-color 0.3s;
-            width: 100%; /* Set the button width to match the text area */
+            width: 100%;
             padding: 8px;
             border: none;
         }
 
         input[type="submit"]:hover {
-            background-color: #0056b3; /* Set the submit button background color on hover */
+            background-color: #0056b3;
         }
 
         /* Styling for the response messages */
-        #responseMessage, #sharedContent {
+        #responseMessage, #publicShares {
             font-weight: bold;
         }
 
-        /* Styling for dark mode link color */
-        a {
-            color: #f0ad4e; /* Set the link color */
+        /* Styling for the public shares section */
+        .public-share {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px; /* Add margin-bottom for separation */
+            background-color: #555;
+            max-width: 600px; /* Set the max width for the gallery */
+            margin: 0 auto; /* Center the gallery */
+
+        }
+
+        .public-share a {
+            color: #fff;
+        }
+
+        /* Styling for clamping text with ellipsis */
+        .clamp-text {
+            max-height: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     </style>
 </head>
 <body>
-    <h1>localshare</h1>
+    <h1>LocalShare</h1>
     <div>
         <h2>Create a Share</h2>
         <form id="shareForm">
-            <label for="shareData">Enter your text:</label>
+            <label for="shareName">Name:</label>
+            <input type="text" id="shareName" name="shareName" required placeholder="Enter a name for your share">
+
+            <label for="shareData">Text:</label>
+            <textarea id="shareData" name="shareData" rows="4" cols="50" required placeholder="Enter your text"></textarea>
+
+            <label for="isPublic">Visibility</label>
+            <select id="isPublic" name="isPublic">
+                <option value="true">Public</option>
+                <option value="false">Private</option>
+            </select>
+
             <div class="input-wrapper">
-                <textarea id="shareData" name="shareData" rows="4" cols="50"></textarea>
                 <input type="submit" value="Submit">
             </div>
         </form>
         <div id="responseMessage"></div>
     </div>
+
+    <div id="publicShares">
+        <h2>Public Shares</h2>
+        <div id="publicShareList"></div>
+    </div>
+
     <script>
-        // Function to handle the form submission for creating a share
-        document.getElementById("shareForm").addEventListener("submit", function(event) {
+        document.getElementById("shareForm").addEventListener("submit", function (event) {
             event.preventDefault();
             const formData = new FormData(event.target);
+            const shareName = formData.get("shareName");
             const shareData = formData.get("shareData");
-
+            const isPublic = formData.get("isPublic") === "true";
+            
             // POST request to the backend to create a new share
             fetch("/new-share", {
                 method: "POST",
-                body: shareData,
-            })
+                body: JSON.stringify({ name: shareName, text: shareData, public: isPublic }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
             .then(response => response.json())
             .then(data => {
                 // Display the response message with the URL to the user
@@ -107,7 +155,26 @@
             .catch(error => {
                 console.error("Error:", error);
             });
+    });
+
+    // Function to fetch and display public shares
+    fetch("/public-shares")
+        .then(response => response.json())
+        .then(publicShares => {
+            const publicShareList = document.getElementById("publicShareList");
+            
+            publicShares.forEach(share => {
+                const shareDiv = document.createElement("div");
+                shareDiv.classList.add("public-share");
+                shareDiv.style.marginBottom = "20px"; // Add margin-bottom for separation
+                shareDiv.innerHTML = `<strong><bold>Name:</bold></strong> ${share.name}<br><strong>Text:</strong> <div class="clamp-text">${share.text}</div><br><a href="/vis/shares/${share.share_uuid}">View Details</a>`;
+                publicShareList.appendChild(shareDiv);
+            });
+        })
+        .catch(error => {
+            console.error("Error fetching public shares:", error);
         });
     </script>
+
 </body>
 </html>
