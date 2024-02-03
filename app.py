@@ -2,6 +2,7 @@ import os
 import uuid
 from flask import Flask, request, jsonify, render_template, send_from_directory, make_response, redirect
 import base64
+import json
 
 app = Flask(__name__)
 
@@ -15,45 +16,62 @@ def index():
 @app.route("/new-share", methods=["POST"])
 def newshare():
     try:
-        # Get the text data from the request body
-        text_data = request.get_data(as_text=True)
+        # Get the JSON data from the request body
+        request_json = request.get_json()
 
-        # Input validation (check if data is not empty and within acceptable limits)
+        # Input validation
+        if not request_json or not isinstance(request_json, dict):
+            return jsonify({"error": "Invalid JSON data"}), 400
+
+        text_data = request_json.get("text", "")
+        name = request_json.get("name", "")
+        is_public = request_json.get("public", False)
+
+        # Additional input validation (customize as needed)
         if not text_data.strip():
-            return jsonify({"error": "Data cannot be empty"}), 400
+            return jsonify({"error": "Text cannot be empty"}), 400
         if len(text_data) > 100:  # Adjust the limit to your requirements
-            return jsonify({"error": "Data exceeds the maximum allowed length"}), 400
+            return jsonify({"error": "Text exceeds the maximum allowed length"}), 400
 
         if not os.path.exists("/shares"):
             os.makedirs("/shares")
 
         share_uuid = str(uuid.uuid4())
-        file_path = os.path.join("/shares", f"{share_uuid}.txt")  # Use '.txt' extension for plain text data
+        file_path = os.path.join("/shares", f"{share_uuid}.json")
 
         # File Path Sanitization
         if not file_path.startswith("/shares"):
             return jsonify({"error": "Invalid share ID"}), 400
 
-        with open(file_path, 'w', encoding='utf-8') as file:  # Specify encoding for writing as UTF-8
-            file.write(text_data)  # Write the UTF-8 plain text data to the file
+        # Save data as JSON
+        json_data = {"text": text_data, "name": name, "public": is_public}
+        with open(file_path, 'w', encoding='utf-8') as file:
+            json.dump(json_data, file, ensure_ascii=False)
 
         return jsonify({"share_uuid": share_uuid}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 # Define the share endpoint with shareid parameter
 @app.route("/share/<shareid>")
 def share(shareid):
-    share_file_path = os.path.join("/shares", f"{shareid}.txt")
+    share_file_path = os.path.join("/shares", f"{shareid}.json")
 
     if not os.path.exists(share_file_path):
         return jsonify({"error": "Share not found"}), 404
 
-    with open(share_file_path, 'r', encoding='utf-8') as file:  # Read the file as UTF-8
-        share_content = file.read()
+    try:
+        with open(share_file_path, 'r', encoding='utf-8') as file:
+            json_data = json.load(file)
 
-    return share_content
+        share_content = json_data.get("text", "")
+        return share_content
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 # Define the endpoint to render the shared text visualizer HTML for the given shareid parameter (UUID)
 @app.route("/vis/shares/<shareid>")
