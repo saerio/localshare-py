@@ -18,18 +18,19 @@
     <script>
         // Function to fetch text and title using UUID from the server and render it
         function renderTextFromUUID(uuid) {
+            console.log('Fetching data from server...');
             fetch(`/share/${uuid}`)
                 .then(response => {
                     if (response.ok) {
-                        return response.json();
+                        return response.text();  // Use response.text() to get plain text
                     } else {
                         throw new Error('Share not found');
                     }
                 })
                 .then(data => {
-                    console.log('Data from server:', data); // Debugging statement
-                    document.getElementById('pageHeading').textContent = data.name; // Update key to 'name'
-                    document.getElementById('text-container').value = data.text;
+                    console.log('Data from server:', data);
+                    document.getElementById('pageHeading').textContent = 'Share Content';  // Update as needed
+                    document.getElementById('text-container').value = data;
                     resizeTextarea();
                 })
                 .catch(error => {
@@ -42,6 +43,8 @@
                     }
                 });
         }
+
+
 
         // Get the UUID from the URL path
         const url = window.location.pathname.split('/');
