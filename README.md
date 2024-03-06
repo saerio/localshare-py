@@ -41,3 +41,8 @@ If you accidentally enter an incorrect link or try to access a share that doesn'
 
    ![screenshot of the 404 error page](https://i.ibb.co/4Rr4sy4/foto3.png)
 
+## Mobile
+
+there is also a mobile client!
+check it out.
+https://routinehub.co/shortcut/18195/
