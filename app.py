@@ -110,6 +110,28 @@ def visualize_share(shareid):
     # Render the share_visualizer.html template
     return render_template("share_visualizer.html")
 
+@app.route("/mobile-json")
+def mobile_json():
+    shares_dict = {}
+
+    shares_directory = "/shares"
+    for filename in os.listdir(shares_directory):
+        file_path = os.path.join(shares_directory, filename)
+        if os.path.isfile(file_path) and filename.endswith(".json"):
+            try:
+                with open(file_path, 'r', encoding='utf-8') as file:
+                    json_data = json.load(file)
+
+                share_name = json_data.get("name", "")
+                shares_dict[share_name] = {
+                    "text": json_data.get("text", "")
+                }
+
+            except Exception as e:
+                return jsonify({"error": str(e)}), 500
+
+    return jsonify(shares_dict), 200
+
 @app.route('/main.js')
 def serve_js():
     return send_from_directory(os.path.join(app.root_path, 'Static'), 'mainjs.js', mimetype='application/javascript')
